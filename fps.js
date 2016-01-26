@@ -1,27 +1,51 @@
 var FPS = function(){
+  this.stats = [];
   this.startTime = 0;
   this.frame = 0;
-  this.el = document.createElement('span');
-  this.el.setAttribute('style', '
-    position: fixed;
-    top: 0;
-    right: 0;
-    background: red;
-    padding: 10px;
-    z-index: 200');
+  this.width = 100;
+  this.height = 60;
 
-  document.body.appendChild(this.el);
+  this.createCanvas();
   this.loop();
 };
 
 FPS.prototype = {
+  createCanvas: function(){
+    this.el = document.createElement('canvas');
+    this.context = this.el.getContext('2d');
+    this.el.width = this.width;
+    this.el.height = this.height;
+    this.context.fillStyle = '#58fd09';
+    this.el.setAttribute('style', '
+      position: fixed;
+      top: 0;
+      right: 0;
+      background: red;
+      z-index: 200');
+    document.body.appendChild(this.el);
+  },
+
   loop: function(){
     var self = this;
-    this.getFPS();
     window.requestAnimationFrame(function(){
+      self.update();
       self.loop();
     }); 
   },
+
+  update: function(){
+    var prevFps = this.getFPS();
+
+    this.context.clearRect(0, 0, this.width, this.height);
+
+    for(var i = 0; i < this.width; i++){
+      var tmpPrevFps = this.stats[i];
+      this.stats[i] = prevFps;
+      prevFps = tmpPrevFps;
+      this.context.fillRect(this.width - i - 1, this.height - tmpPrevFps, 1, tmpPrevFps);
+    }
+  },
+
   getFPS: function(){
     this.frame++;
 
@@ -34,7 +58,7 @@ FPS.prototype = {
       this.frame = 0;
     }
 
-    this.el.innerHTML = result;
+    return result;
   }
 };
 
