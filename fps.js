@@ -2,7 +2,7 @@ var FPS = function(){
   this.stats = [];
   this.startTime = 0;
   this.frame = 0;
-  this.width = 100;
+  this.width = 150;
   this.height = 60;
 
   this.createCanvas();
@@ -15,7 +15,9 @@ FPS.prototype = {
     this.context = this.el.getContext('2d');
     this.el.width = this.width;
     this.el.height = this.height;
-    this.context.fillStyle = '#58fd09';
+    
+    this.context.font = "16px Arial";
+
     this.el.setAttribute('style', '
       position: fixed;
       top: 0;
@@ -34,8 +36,10 @@ FPS.prototype = {
   },
 
   update: function(){
-    var prevFps = this.getFPS();
+    var curFps = this.getFPS();
+    var prevFps = curFps;
 
+    this.context.fillStyle = '#58fd09';
     this.context.clearRect(0, 0, this.width, this.height);
 
     for(var i = 0; i < this.width; i++){
@@ -44,6 +48,9 @@ FPS.prototype = {
       prevFps = tmpPrevFps;
       this.context.fillRect(this.width - i - 1, this.height - tmpPrevFps, 1, tmpPrevFps);
     }
+
+    this.context.fillStyle = '#000';
+    this.context.fillText(curFps + ' FPS', 10, this.height - 10);
   },
 
   getFPS: function(){
