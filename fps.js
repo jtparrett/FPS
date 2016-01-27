@@ -18,12 +18,7 @@ FPS.prototype = {
     
     this.context.font = "16px Arial";
 
-    this.el.setAttribute('style', '
-      position: fixed;
-      top: 0;
-      right: 0;
-      background: red;
-      z-index: 200');
+    this.el.setAttribute('style', 'position: fixed;top: 0;right: 0;background: red;z-index: 200');
     document.body.appendChild(this.el);
   },
 
