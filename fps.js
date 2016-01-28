@@ -42,8 +42,11 @@ FPS.prototype = {
       this.context.fillRect(this.width - i - 1, this.height - tmpPrevFps, 1, tmpPrevFps);
     }
 
-    this.context.fillStyle = '#711331';
-    this.context.fillText(curFps + ' FPS', 10, this.height - 10);
+    this.context.fillStyle = '#fff';
+    this.context.fillText('FPS: ' + curFps, 8, this.height - 8);
+
+    this.context.fillStyle = '#000';
+    this.context.fillRect(0, this.height - 30, this.width, 1);
   },
 
   getFPS: function(){
