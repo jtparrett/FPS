@@ -5,42 +5,92 @@ var FPS = function(){
   this.width = 150;
   this.height = 60;
 
-  this.createCanvas();
+  this.realWidth = this.width + 24;
+
+  this.create();
   this.toggle();
 };
 
 FPS.prototype = {
-  toggle: function(){
-    this.hidden = (this.hidden)? false : true;
-    if(this.hidden){
-      this.el.style.display = 'none';
-    } else {
-      this.el.style.display = 'block';
-    }
-  },
-
-  createCanvas: function(){
+  create: function(){
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
     this.canvas.width = this.width;
     this.canvas.height = this.height;
+    this.canvas.classList.add('fps__canvas');
 
     this.context.font = "14px Arial";
-    this.canvas.classList.add('fps__canvas');
 
     this.el = document.createElement('div');
     this.el.classList.add('fps');
 
     this.el.appendChild(this.canvas);
     document.body.appendChild(this.el);
+    this.dragEvent();
+  },
+
+  dragEvent: function(){
+    var self = this;
+    var diffs = {};
+    var dragging = false;
+
+    this.x = this.el.offsetLeft;
+    this.y = this.el.offsetTop;
+
+    this.el.onmousedown = function(e){
+      diffs.x = e.clientX - self.x;
+      diffs.y = e.clientY - self.y;
+      dragging = true;
+    };
+
+    document.onmouseup = function(){
+      dragging = false;
+    };
+
+    document.onmousemove = function(e){
+      if(dragging){
+        var newY = e.clientY - diffs.y;
+        var newX = e.clientX - diffs.x;
+
+        if(newX <= 0){
+          newX = 0;
+        } else if(newX + self.realWidth >= window.innerWidth){
+          newX = window.innerWidth - self.realWidth;
+        }
+
+        if(newY <= 0){
+          newY = 0;
+        } else if(newY + self.height >= window.innerHeight){
+          newY = window.innerHeight - self.height;
+        }
+
+        self.x = newX;
+        self.y = newY;
+        self.move();
+        return false;
+      }
+    };
+  },
+
+  move: function(){
+    this.el.style.left = this.x + 'px';
+    this.el.style.top = this.y + 'px';
+  },
+
+  toggle: function(){
+    this.hidden = (this.hidden)? false : true;
+    var display = (this.hidden)? 'none' : 'block';
+    this.el.style.display = display;
+    this.loop();
   },
 
   loop: function(){
     var self = this;
+    if(self.hidden){
+      return false;
+    }
+
     window.requestAnimationFrame(function(){
-      if(self.hidden){
-        return false;
-      }
       self.update();
       self.loop();
     }); 
@@ -61,7 +111,7 @@ FPS.prototype = {
     }
 
     this.context.fillStyle = '#fff';
-    this.context.fillText(curFps + 'fps', 8, this.height - 8);
+    this.context.fillText(curFps + ' fps', 5, this.height - 9);
 
     this.context.fillStyle = 'rgba(0, 0, 0, 0.2)';
     this.context.fillRect(0, this.height - 30, this.width, 1);
@@ -87,6 +137,5 @@ var inst = new FPS();
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   if(request.message === "clicked_browser_action"){
     inst.toggle();
-    inst.loop();
   }
 });
