@@ -6,23 +6,35 @@ var FPS = function(){
   this.height = 60;
 
   this.createCanvas();
-  this.loop();
+  this.toggle();
 };
 
 FPS.prototype = {
+  toggle: function(){
+    this.hidden = (this.hidden)? false : true;
+    if(this.hidden){
+      this.el.style.display = 'none';
+    } else {
+      this.el.style.display = 'block';
+    }
+  },
+
   createCanvas: function(){
     this.el = document.createElement('canvas');
     this.context = this.el.getContext('2d');
     this.el.width = this.width;
     this.el.height = this.height;
     this.context.font = "16px Arial";
-    this.el.setAttribute('style', 'position:fixed;top:0;right:0;background:#973252;z-index:200');
+    this.el.setAttribute('style', 'position:fixed;top:0;right:0;background:#973252;z-index:9999');
     document.body.appendChild(this.el);
   },
 
   loop: function(){
     var self = this;
     window.requestAnimationFrame(function(){
+      if(self.hidden){
+        return false;
+      }
       self.update();
       self.loop();
     }); 
@@ -65,4 +77,11 @@ FPS.prototype = {
   }
 };
 
-new FPS();
+var inst = new FPS();
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+  if(request.message === "clicked_browser_action"){
+    inst.toggle();
+    inst.loop();
+  }
+});
