@@ -15,8 +15,11 @@
   
   "content_scripts": [{
     "matches": ["<all_urls>"],
-    "js": ["fps.js"]
+    "js": ["fps.js"],
+    "css": ["fps.css"]
   }],
+
+  "web_accessible_resources": ["handle.png"],
 
   "background": {
     "scripts": ["background.js"],

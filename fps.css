@@ -1,0 +1,14 @@
+.fps {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.04);
+  background: url('chrome-extension://__MSG_@@extension_id__/handle.png');
+}
+
+.fps__canvas {
+  display: block;
+  background: #ed6564;
+  margin-left: 24px;
+}

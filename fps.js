@@ -20,12 +20,18 @@ FPS.prototype = {
   },
 
   createCanvas: function(){
-    this.el = document.createElement('canvas');
-    this.context = this.el.getContext('2d');
-    this.el.width = this.width;
-    this.el.height = this.height;
-    this.context.font = "16px Arial";
-    this.el.setAttribute('style', 'position:fixed;top:0;right:0;background:#973252;z-index:9999');
+    this.canvas = document.createElement('canvas');
+    this.context = this.canvas.getContext('2d');
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
+
+    this.context.font = "14px Arial";
+    this.canvas.classList.add('fps__canvas');
+
+    this.el = document.createElement('div');
+    this.el.classList.add('fps');
+
+    this.el.appendChild(this.canvas);
     document.body.appendChild(this.el);
   },
 
@@ -44,7 +50,7 @@ FPS.prototype = {
     var curFps = this.getFPS();
     var prevFps = curFps;
 
-    this.context.fillStyle = '#E297AF';
+    this.context.fillStyle = '#94d5bf';
     this.context.clearRect(0, 0, this.width, this.height);
 
     for(var i = 0; i < this.width; i++){
@@ -55,9 +61,9 @@ FPS.prototype = {
     }
 
     this.context.fillStyle = '#fff';
-    this.context.fillText('FPS: ' + curFps, 8, this.height - 8);
+    this.context.fillText(curFps + 'fps', 8, this.height - 8);
 
-    this.context.fillStyle = '#000';
+    this.context.fillStyle = 'rgba(0, 0, 0, 0.2)';
     this.context.fillRect(0, this.height - 30, this.width, 1);
   },
 
@@ -78,7 +84,6 @@ FPS.prototype = {
 };
 
 var inst = new FPS();
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   if(request.message === "clicked_browser_action"){
     inst.toggle();
