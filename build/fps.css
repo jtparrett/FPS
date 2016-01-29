@@ -7,7 +7,7 @@
   z-index: 9999;
   box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.04);
   background-color: #3b3e45;
-  background-image: url('chrome-extension://__MSG_@@extension_id__/handle.png');
+  background-image: url('chrome-extension://__MSG_@@extension_id__/handle.svg');
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
 }
