@@ -4,10 +4,12 @@ var FPS = function(){
   this.frame = 0;
   this.width = 150;
   this.height = 60;
+  this.hidden = true;
 
   this.realWidth = this.width + 24;
 
   this.create();
+  this.showHide();
   this.toggle(true);
 };
 
@@ -78,22 +80,33 @@ FPS.prototype = {
   },
 
   toggle: function(isFirst){
-    var cookie = getCookie("FPSHidden");
+    var self = this;
+
     if(isFirst){
-      this.hidden = (cookie === 'false')? false : true;
+      chrome.storage.sync.get("hidden", function(data){
+        if(typeof(data.hidden) != 'undefined'){
+          self.hidden = data.hidden;
+        }
+        self.showHide();
+        self.loop();
+      });
     } else {
       this.hidden = (this.hidden)? false : true;
-      document.cookie="FPSHidden=" + this.hidden;
+      chrome.storage.sync.set({'hidden': self.hidden}, function(){
+        self.showHide();
+        self.loop();
+      });
     }
+  },
 
+  showHide: function(){
     var display = (this.hidden)? 'none' : 'block';
     this.el.style.display = display;
-    this.loop();
   },
 
   loop: function(){
     var self = this;
-    if(self.hidden){
+    if(this.hidden){
       return false;
     }
 
@@ -139,17 +152,6 @@ FPS.prototype = {
     return result;
   }
 };
-
-function getCookie(cname){
-  var name = cname + "=";
-  var ca = document.cookie.split(';');
-  for(var i=0; i<ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0)==' ') c = c.substring(1);
-      if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
-  }
-  return "";
-}
 
 var inst = new FPS();
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){

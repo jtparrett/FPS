@@ -3,14 +3,15 @@
 
   "name": "FPS",
   "description": "An FPS Meter",
-  "version": "1.11",
+  "version": "1.12",
 
   "browser_action": {
    "default_icon": "icon.png"
   },
   
   "permissions": [
-   "activeTab"
+   "activeTab",
+   "storage"
   ],
   
   "content_scripts": [{
